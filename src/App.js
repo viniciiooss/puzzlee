@@ -1,17 +1,19 @@
 import React, { createContext, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Images from './components/Images';
-import Jumbutron from './components/Jumbutron';
+import Jumbotron from './components/Jumbotron';
 import SearchField from './components/SearchField';
 import PuzzlePage from './components/PuzzlePage';
 import useAxios from './hooks/useAxios';
+import HomePage from './components/HomePage';
+import Chatbot from './components/Chatbot';
 
 // Create Context
 export const ImageContext = createContext();
 
 function App() {
-  const [searchImage, setSearchImage] = useState('');
-  const { response, isLoading, error, fetchData } = useAxios(`search/photos?page=1&query=cats&client_id=${process.env.REACT_APP_ACCESS_KEY}`);
+  const [searchImage, setSearchImage] = useState('cats');
+  const { response, isLoading, error, fetchData } = useAxios(`search/photos?page=1&query=${searchImage}&client_id=${process.env.REACT_APP_ACCESS_KEY}`);
 
   const value = {
     response,
@@ -26,11 +28,13 @@ function App() {
     <ImageContext.Provider value={value}>
       <Router>
         <Routes>
-          <Route path="/" element={
+          <Route path="/" element={<HomePage />} />
+          <Route path="/chatbot" element={<Chatbot />} />
+          <Route path="/puzzles" element={
             <>
-              <Jumbutron>
+              <Jumbotron>
                 <SearchField />
-              </Jumbutron>
+              </Jumbotron>
               <Images />
             </>
           } />
@@ -42,4 +46,3 @@ function App() {
 }
 
 export default App;
-

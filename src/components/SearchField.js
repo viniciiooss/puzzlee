@@ -1,43 +1,69 @@
-import { useContext, useState } from "react"
-import { ImageContext } from "../App";
+import React, { useState, useContext } from 'react';
+import { ImageContext } from '../App';
+import './SearchField.css';
 
 const SearchField = () => {
-  const [searchValue, setSearchValue] = useState("");
-  const { fetchData, setSearchImage } = useContext(ImageContext);
+  const { searchImage, setSearchImage, fetchData } = useContext(ImageContext);
+  const [isListening, setIsListening] = useState(false);
 
-  const handleInputChange = (e) => {
-    setSearchValue(e.target.value);
-  }
-  const handleButtonSearch = () => {
-    fetchData(`search/photos?page=1&query=${searchValue}&client_id=${process.env.REACT_APP_ACCESS_KEY}`)
-    setSearchValue("");
-    setSearchImage(searchValue);
-  }
-  const handleEnterSearch = e => {
-    if(e.key === 'Enter') {
-      fetchData(`search/photos?page=1&query=${searchValue}&client_id=${process.env.REACT_APP_ACCESS_KEY}`)
-      setSearchValue("");
-      setSearchImage(searchValue);
+  const handleSearchChange = (event) => {
+    setSearchImage(event.target.value);
+  };
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    fetchData(`search/photos?page=1&query=${searchImage}&client_id=${process.env.REACT_APP_ACCESS_KEY}`);
+  };
+
+  const handleListen = () => {
+    if ('webkitSpeechRecognition' in window) {
+      const recognition = new window.webkitSpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'pt-BR';
+
+      recognition.onstart = () => {
+        setIsListening(true);
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setSearchImage(transcript);
+        setIsListening(false);
+      };
+
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognition.start();
+    } else {
+      alert('Seu navegador não suporta reconhecimento de voz.');
     }
-  }
+  };
 
   return (
-    <div className="flex">
-      <input
-        className="bg-gray-50 border border-gray-300 text-sm w-full indent-2 p-2.5 outline-none focus:border-blue-500 focus:ring-2 rounded-tl rounded-bl"
-        type="search"
-        placeholder="Search Anything..."
-        value={searchValue}
-        onChange={handleInputChange}
-        onKeyDown={handleEnterSearch}
+    <div className="search-field-container">
+      <form onSubmit={handleSearchSubmit}>
+        <input
+          type="text"
+          value={searchImage}
+          onChange={handleSearchChange}
+          placeholder="Search Anything..."
+          className="search-input"
         />
-      <button
-        onClick={handleButtonSearch}
-        disabled={!searchValue}
-        className="bg-blue-600 px-6 py-2.5 text-white rounded-tr rounded-br focus:ring-2 focus:ring-blue-300 disabled:bg-gray-400"
-      >Search</button>
+        <button type="button" className="mic-button" onClick={handleListen}>
+          🎤
+        </button>
+        <button type="submit" className="search-button">Search</button>
+      </form>
     </div>
-  )
-}
+  );
+};
 
-export default SearchField
+export default SearchField;

@@ -1,23 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Chatbot from './Chatbot';
 
 const PuzzlePage = () => {
   const { state } = useLocation();
-  const { imageUrl } = state || {}; // Destructure imageUrl from state
+  const { imageUrl } = state || {};
   const [pieces, setPieces] = useState([]);
+  const [containerSize, setContainerSize] = useState({ width: 600, height: 600 });
+  const [allCorrect, setAllCorrect] = useState(false);
+  const navigate = useNavigate();
+
+  const gridRows = 2;
+  const gridCols = 2;
 
   useEffect(() => {
     if (imageUrl) {
       const img = new Image();
       img.src = imageUrl;
       img.onload = () => {
-        const maxWidth = 800; // Max width for the puzzle container
-        const maxHeight = 400; // Max height for the puzzle container
+        const maxWidth = 600;
+        const maxHeight = 600;
         const aspectRatio = img.width / img.height;
         let width, height;
 
-        if (aspectRatio > 2) {
+        if (aspectRatio > 1) {
           width = maxWidth;
           height = maxWidth / aspectRatio;
         } else {
@@ -25,24 +32,62 @@ const PuzzlePage = () => {
           height = maxHeight;
         }
 
-        const pieceWidth = width / 4;
-        const pieceHeight = height / 2;
+        setContainerSize({ width, height });
+
+        const pieceWidth = width / gridCols;
+        const pieceHeight = height / gridRows;
         const newPieces = [];
-        for (let y = 0; y < 2; y++) {
-          for (let x = 0; x < 4; x++) {
+        for (let y = 0; y < gridRows; y++) {
+          for (let x = 0; x < gridCols; x++) {
             newPieces.push({
-              x: x * pieceWidth,
-              y: y * pieceHeight,
+              initialX: x * pieceWidth,
+              initialY: y * pieceHeight,
               width: pieceWidth,
               height: pieceHeight,
               imgSrc: imageUrl,
+              x: Math.random() * (maxWidth - pieceWidth),
+              y: Math.random() * (maxHeight - pieceHeight),
+              correctX: x * pieceWidth,
+              correctY: y * pieceHeight,
+              isCorrect: false,
             });
           }
         }
         setPieces(newPieces);
+        setAllCorrect(false);
       };
     }
   }, [imageUrl]);
+
+  const handleStop = (e, data, index) => {
+    const tolerance = 20;
+    const newPieces = [...pieces];
+    const piece = newPieces[index];
+    if (
+      Math.abs(data.x - piece.correctX) <= tolerance &&
+      Math.abs(data.y - piece.correctY) <= tolerance
+    ) {
+      piece.x = piece.correctX;
+      piece.y = piece.correctY;
+      piece.isCorrect = true;
+    } else {
+      piece.x = data.x;
+      piece.y = data.y;
+      piece.isCorrect = false;
+    }
+    setPieces(newPieces);
+    checkAllCorrect(newPieces);
+  };
+
+  const checkAllCorrect = (pieces) => {
+    const allCorrect = pieces.every(piece => piece.isCorrect);
+    setAllCorrect(allCorrect);
+  };
+
+  const handleNextPuzzle = () => {
+    // Aqui você pode implementar a lógica para carregar a próxima imagem.
+    navigate('/');
+  };
 
   if (!imageUrl) {
     return <div>Image not found</div>;
@@ -55,35 +100,48 @@ const PuzzlePage = () => {
         className="puzzle-container"
         style={{
           position: 'relative',
-          width: '100%',
-          height: '400px',
-          maxWidth: '800px',
+          width: `${containerSize.width}px`,
+          height: `${containerSize.height}px`,
           margin: '20px auto',
           border: '1px solid #ccc',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
         }}
       >
-        {pieces.map((piece, index) => (
-          <Draggable key={index}>
-            <div
-              style={{
-                position: 'absolute',
-                top: piece.y,
-                left: piece.x,
-                width: piece.width,
-                height: piece.height,
-                backgroundImage: `url(${piece.imgSrc})`,
-                backgroundPosition: `-${piece.x}px -${piece.y}px`,
-                backgroundSize: `${4 * piece.width}px ${2 * piece.height}px`,
-                border: '1px solid #ccc',
-              }}
-            />
-          </Draggable>
-        ))}
+        <div style={{ position: 'relative', width: `${containerSize.width}px`, height: `${containerSize.height}px` }}>
+          {pieces.map((piece, index) => (
+            <Draggable
+              key={index}
+              defaultPosition={{ x: piece.x, y: piece.y }}
+              position={piece.isCorrect ? { x: piece.correctX, y: piece.correctY } : null}
+              onStop={(e, data) => handleStop(e, data, index)}
+            >
+              <div
+                className="puzzle-piece"
+                style={{
+                  position: 'absolute',
+                  width: piece.width,
+                  height: piece.height,
+                  backgroundImage: `url(${piece.imgSrc})`,
+                  backgroundPosition: `-${piece.initialX}px -${piece.initialY}px`,
+                  backgroundSize: `${gridCols * piece.width}px ${gridRows * piece.height}px`,
+                }}
+              />
+            </Draggable>
+          ))}
+        </div>
       </div>
+      {allCorrect && (
+        <div className="text-center mt-4">
+          <button onClick={handleNextPuzzle} className="button">
+            Next Puzzle
+          </button>
+        </div>
+      )}
+      <Chatbot />
     </div>
   );
 };
 
 export default PuzzlePage;
-
-
