@@ -25,10 +25,10 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 You can see my youtube video for this project in [here](https://youtu.be/yUau8xImmK0)
 
 ### Novas Funcionalidades
-Página Inicial
+![Página Inicial](public/newjustplot2.jpg) 
 Adicionamos uma nova página inicial que permite aos usuários navegar entre o Chatbot e os Puzzles. Na página inicial, você encontrará dois botões, um para acessar o Chatbot e outro para acessar os Puzzles.
 
-### Assistente Virtual de Consultas sobre Autismo
+![Assistente Virtual de Consultas sobre Autismo](public/newjustplot1.jpg)
 Implementamos um chatbot para consultas sobre autismo. O usuário pode digitar suas perguntas ou usar o microfone para falar e receber respostas sobre autismo.
 
 ### Busca com Reconhecimento de Voz
