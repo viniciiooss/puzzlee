@@ -135,7 +135,7 @@ const PuzzlePage = () => {
       {allCorrect && (
         <div className="text-center mt-4">
           <button onClick={handleNextPuzzle} className="button">
-            Next Puzzle
+            Voltar para home
           </button>
         </div>
       )}
