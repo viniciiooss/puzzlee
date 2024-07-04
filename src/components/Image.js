@@ -18,7 +18,7 @@ const Image = ({ data }) => {
         />
       </a>
       <button onClick={handleClick} className="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
-        Play Puzzle
+        Jogar quebra-cabeça
       </button>
     </>
   );
