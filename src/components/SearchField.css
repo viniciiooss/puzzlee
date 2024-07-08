@@ -1,58 +1,63 @@
 .search-field-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px 0;
-  }
-  
-  form {
-    display: flex;
-    align-items: center;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-input {
+  color: black;
+  width: 100%;
+  max-width: 300px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-right: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.mic-button, .search-button {
+  width: 40px;
+  height: 40px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  margin-right: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.search-button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  width: auto;
+}
+
+.mic-button:hover, .search-button:hover {
+  background-color: #0056b3;
+}
+
+@media (max-width: 600px) {
   .search-input {
-    color:black;
-    width: 300px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    margin-right: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    margin-right: 0;
   }
-  
-  .mic-button {
-    width: 40px;
-    height: 40px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    font-size: 16px;
-    margin-right: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s;
+
+  .mic-button, .search-button {
+    margin-right: 0;
+    margin-bottom: 10px;
   }
-  
-  .mic-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .search-button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .search-button:hover {
-    background-color: #0056b3;
-  }
-  
+}
