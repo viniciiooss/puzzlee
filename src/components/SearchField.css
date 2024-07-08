@@ -3,22 +3,37 @@
   justify-content: center;
   align-items: center;
   margin: 20px 0;
+<<<<<<< HEAD
+=======
+  flex-wrap: wrap;
+>>>>>>> 9c427d995ea3b6898f21648bbf389147fdca6c1d
 }
 
 form {
   display: flex;
   align-items: center;
+<<<<<<< HEAD
   flex-wrap: wrap; /* Permite que os elementos se ajustem em várias linhas */
 }
 
 .search-input {
   width: 300px;
+=======
+  flex-wrap: wrap;
+}
+
+.search-input {
+  color: black;
+  width: 100%;
+  max-width: 300px;
+>>>>>>> 9c427d995ea3b6898f21648bbf389147fdca6c1d
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
   margin-right: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+<<<<<<< HEAD
   color: black; /* Cor do texto */
   background-color: white; /* Cor do fundo */
 }
@@ -36,12 +51,37 @@ form {
   display: flex;
   align-items: center;
   justify-content: center;
+=======
+}
+
+.mic-button, .search-button {
+  width: 40px;
+  height: 40px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  margin-right: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.search-button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  width: auto;
+>>>>>>> 9c427d995ea3b6898f21648bbf389147fdca6c1d
 }
 
 .mic-button:hover, .search-button:hover {
   background-color: #0056b3;
 }
 
+<<<<<<< HEAD
 /* Regras de mídia para responsividade */
 @media (max-width: 768px) {
   .search-input {
@@ -60,4 +100,16 @@ form {
   form {
     flex-direction: column;
   }
+=======
+@media (max-width: 600px) {
+  .search-input {
+    margin-bottom: 10px;
+    margin-right: 0;
+  }
+
+  .mic-button, .search-button {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+>>>>>>> 9c427d995ea3b6898f21648bbf389147fdca6c1d
 }

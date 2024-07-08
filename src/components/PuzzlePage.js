@@ -142,6 +142,17 @@ const PuzzlePage = () => {
           ></div>
         ))}
       </div>
+<<<<<<< HEAD
+=======
+      {allCorrect && (
+        <div className="text-center mt-4">
+          <button onClick={handleNextPuzzle} className="button">
+            Voltar para home
+          </button>
+        </div>
+      )}
+      <Chatbot />
+>>>>>>> 9c427d995ea3b6898f21648bbf389147fdca6c1d
     </div>
   );
 };

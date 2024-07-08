@@ -4,7 +4,7 @@ const Jumbutron = ({ children }) => {
   return (
     <div className="header">
       <div className='max-w-md mx-auto w-full'>
-        <h1 className='text-center text-2xl font-bold mb-5'>Find Images</h1>
+        <h1 className='text-center text-2xl font-bold mb-5'>Encontre imagens</h1>
         {children}
       </div>
     </div>

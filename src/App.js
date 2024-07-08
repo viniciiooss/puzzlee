@@ -12,7 +12,7 @@ import Chatbot from './components/Chatbot';
 export const ImageContext = createContext();
 
 function App() {
-  const [searchImage, setSearchImage] = useState('cats');
+  const [searchImage, setSearchImage] = useState('Gatos');
   const { response, isLoading, error, fetchData } = useAxios(`search/photos?page=1&query=${searchImage}&client_id=${process.env.REACT_APP_ACCESS_KEY}`);
 
   const value = {
