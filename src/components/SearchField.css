@@ -1,57 +1,63 @@
 .search-field-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px 0;
-  }
-  
-  form {
-    display: flex;
-    align-items: center;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+form {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap; /* Permite que os elementos se ajustem em várias linhas */
+}
+
+.search-input {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-right: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: black; /* Cor do texto */
+  background-color: white; /* Cor do fundo */
+}
+
+.mic-button, .search-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mic-button:hover, .search-button:hover {
+  background-color: #0056b3;
+}
+
+/* Regras de mídia para responsividade */
+@media (max-width: 768px) {
   .search-input {
-    width: 300px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    margin-right: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
   }
-  
-  .mic-button {
-    width: 40px;
-    height: 40px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    font-size: 16px;
-    margin-right: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s;
+
+  .mic-button, .search-button {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+    padding: 12px 0;
   }
-  
-  .mic-button:hover {
-    background-color: #0056b3;
+
+  form {
+    flex-direction: column;
   }
-  
-  .search-button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .search-button:hover {
-    background-color: #0056b3;
-  }
-  
+}

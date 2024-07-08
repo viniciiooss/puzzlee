@@ -1,145 +1,147 @@
 import React, { useEffect, useState } from 'react';
-import Draggable from 'react-draggable';
-import { useLocation, useNavigate } from 'react-router-dom';
-import Chatbot from './Chatbot';
+import { useLocation } from 'react-router-dom';
+import './PuzzlePage.css';
 
 const PuzzlePage = () => {
   const { state } = useLocation();
   const { imageUrl } = state || {};
-  const [pieces, setPieces] = useState([]);
-  const [containerSize, setContainerSize] = useState({ width: 600, height: 600 });
-  const [allCorrect, setAllCorrect] = useState(false);
-  const navigate = useNavigate();
+  
+  const gridRows = 3; // Número de linhas do quebra-cabeça
+  const gridCols = 4; // Número de colunas do quebra-cabeça
 
-  const gridRows = 2;
-  const gridCols = 2;
+  const containerWidth = 400; // Ajuste conforme necessário
+  const containerHeight = 300; // Ajuste conforme necessário
+
+  const pieceWidth = containerWidth / gridCols;
+  const pieceHeight = containerHeight / gridRows;
+
+  const [pieces, setPieces] = useState([]);
+  const [selectedPiece, setSelectedPiece] = useState(null);
 
   useEffect(() => {
     if (imageUrl) {
-      const img = new Image();
-      img.src = imageUrl;
-      img.onload = () => {
-        const maxWidth = 600;
-        const maxHeight = 600;
-        const aspectRatio = img.width / img.height;
-        let width, height;
+      const grade = document.getElementById('grade');
+      grade.innerHTML = ''; // Clear any existing pieces
+      const newPieces = [];
 
-        if (aspectRatio > 1) {
-          width = maxWidth;
-          height = maxWidth / aspectRatio;
-        } else {
-          width = maxHeight * aspectRatio;
-          height = maxHeight;
+      for (let i = 0; i < gridRows; i++) {
+        for (let j = 0; j < gridCols; j++) {
+          const novapeca = {
+            id: `x${j}y${i}`,
+            top: `${i * pieceHeight}px`,
+            left: `${j * pieceWidth}px`,
+            backgroundPosition: `-${j * pieceWidth}px -${i * pieceHeight}px`,
+            backgroundImage: `url(${imageUrl})`,
+            width: `${pieceWidth}px`,
+            height: `${pieceHeight}px`,
+          };
+          newPieces.push(novapeca);
         }
+      }
 
-        setContainerSize({ width, height });
-
-        const pieceWidth = width / gridCols;
-        const pieceHeight = height / gridRows;
-        const newPieces = [];
-        for (let y = 0; y < gridRows; y++) {
-          for (let x = 0; x < gridCols; x++) {
-            newPieces.push({
-              initialX: x * pieceWidth,
-              initialY: y * pieceHeight,
-              width: pieceWidth,
-              height: pieceHeight,
-              imgSrc: imageUrl,
-              x: Math.random() * (maxWidth - pieceWidth),
-              y: Math.random() * (maxHeight - pieceHeight),
-              correctX: x * pieceWidth,
-              correctY: y * pieceHeight,
-              isCorrect: false,
-            });
-          }
-        }
-        setPieces(newPieces);
-        setAllCorrect(false);
-      };
+      setPieces(newPieces);
+      embaralhar(newPieces, 100);
     }
   }, [imageUrl]);
 
-  const handleStop = (e, data, index) => {
-    const tolerance = 20;
-    const newPieces = [...pieces];
-    const piece = newPieces[index];
-    if (
-      Math.abs(data.x - piece.correctX) <= tolerance &&
-      Math.abs(data.y - piece.correctY) <= tolerance
-    ) {
-      piece.x = piece.correctX;
-      piece.y = piece.correctY;
-      piece.isCorrect = true;
+  const handlePieceClick = (piece) => {
+    if (!selectedPiece) {
+      setSelectedPiece(piece);
     } else {
-      piece.x = data.x;
-      piece.y = data.y;
-      piece.isCorrect = false;
+      if (selectedPiece !== piece) {
+        trocarPeca(selectedPiece, piece);
+        setSelectedPiece(null); // Clear selection after swap
+      }
     }
+  };
+
+  const trocarPeca = (piece1, piece2) => {
+    const newPieces = [...pieces];
+    const index1 = newPieces.findIndex(p => p.id === piece1.id);
+    const index2 = newPieces.findIndex(p => p.id === piece2.id);
+
+    const tempTop = newPieces[index1].top;
+    const tempLeft = newPieces[index1].left;
+    newPieces[index1].top = newPieces[index2].top;
+    newPieces[index1].left = newPieces[index2].left;
+    newPieces[index2].top = tempTop;
+    newPieces[index2].left = tempLeft;
+
     setPieces(newPieces);
-    checkAllCorrect(newPieces);
+    validar(newPieces);
   };
 
-  const checkAllCorrect = (pieces) => {
-    const allCorrect = pieces.every(piece => piece.isCorrect);
-    setAllCorrect(allCorrect);
+  const embaralhar = (pieces, argIteracoes) => {
+    const newPieces = [...pieces];
+    for (let i = 0; i < argIteracoes; i++) {
+      let escolhido1X = 0;
+      let escolhido1Y = 0;
+      let escolhido2X = 0;
+      let escolhido2Y = 0;
+
+      while (escolhido1X === escolhido2X && escolhido1Y === escolhido2Y) {
+        escolhido1X = Math.round(Math.random() * (gridCols - 1));
+        escolhido1Y = Math.round(Math.random() * (gridRows - 1));
+        escolhido2X = Math.round(Math.random() * (gridCols - 1));
+        escolhido2Y = Math.round(Math.random() * (gridRows - 1));
+      }
+      const index1 = newPieces.findIndex(p => p.id === `x${escolhido1X}y${escolhido1Y}`);
+      const index2 = newPieces.findIndex(p => p.id === `x${escolhido2X}y${escolhido2Y}`);
+      const tempTop = newPieces[index1].top;
+      const tempLeft = newPieces[index1].left;
+      newPieces[index1].top = newPieces[index2].top;
+      newPieces[index1].left = newPieces[index2].left;
+      newPieces[index2].top = tempTop;
+      newPieces[index2].left = tempLeft;
+    }
+
+    setPieces(newPieces);
   };
 
-  const handleNextPuzzle = () => {
-    // Aqui você pode implementar a lógica para carregar a próxima imagem.
-    navigate('/');
-  };
+  const validar = (pieces) => {
+    let quebraCabecaOk = true;
+    for (let i = 0; i < gridRows; i++) {
+      for (let j = 0; j < gridCols; j++) {
+        const posicaoXEsperada = `${j * pieceWidth}px`;
+        const posicaoYEsperada = `${i * pieceHeight}px`;
 
-  if (!imageUrl) {
-    return <div>Image not found</div>;
-  }
+        const pecaVerificada = pieces.find(p => p.id === `x${j}y${i}`);
+        if (pecaVerificada.left !== posicaoXEsperada || pecaVerificada.top !== posicaoYEsperada) {
+          quebraCabecaOk = false;
+        }
+      }
+    }
+    if (quebraCabecaOk) {
+      window.alert('Parabéns, você conseguiu!!!');
+    }
+  };
 
   return (
     <div className="puzzle-page">
-      <h1 className="text-center mt-6 text-2xl">Puzzle</h1>
-      <div
+      <h1 className="title">Quebra-Cabeça</h1>
+      <div 
+        id="grade" 
         className="puzzle-container"
-        style={{
-          position: 'relative',
-          width: `${containerSize.width}px`,
-          height: `${containerSize.height}px`,
-          margin: '20px auto',
-          border: '1px solid #ccc',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
+        style={{ width: `${containerWidth}px`, height: `${containerHeight}px` }}
       >
-        <div style={{ position: 'relative', width: `${containerSize.width}px`, height: `${containerSize.height}px` }}>
-          {pieces.map((piece, index) => (
-            <Draggable
-              key={index}
-              defaultPosition={{ x: piece.x, y: piece.y }}
-              position={piece.isCorrect ? { x: piece.correctX, y: piece.correctY } : null}
-              onStop={(e, data) => handleStop(e, data, index)}
-            >
-              <div
-                className="puzzle-piece"
-                style={{
-                  position: 'absolute',
-                  width: piece.width,
-                  height: piece.height,
-                  backgroundImage: `url(${piece.imgSrc})`,
-                  backgroundPosition: `-${piece.initialX}px -${piece.initialY}px`,
-                  backgroundSize: `${gridCols * piece.width}px ${gridRows * piece.height}px`,
-                }}
-              />
-            </Draggable>
-          ))}
-        </div>
+        {pieces.map(piece => (
+          <div
+            key={piece.id}
+            id={piece.id}
+            className={`puzzle-piece${selectedPiece && selectedPiece.id === piece.id ? ' selected' : ''}`}
+            style={{
+              width: piece.width,
+              height: piece.height,
+              top: piece.top,
+              left: piece.left,
+              backgroundPosition: piece.backgroundPosition,
+              backgroundImage: piece.backgroundImage,
+              backgroundSize: `${containerWidth}px ${containerHeight}px`,
+            }}
+            onClick={() => handlePieceClick(piece)}
+          ></div>
+        ))}
       </div>
-      {allCorrect && (
-        <div className="text-center mt-4">
-          <button onClick={handleNextPuzzle} className="button">
-            Next Puzzle
-          </button>
-        </div>
-      )}
-      <Chatbot />
     </div>
   );
 };
